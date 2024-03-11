@@ -4,7 +4,9 @@ import Bookshelf from "./components/Bookshelf";
 import Button from "./components/Button";
 import Info from "./components/Info";
 import books from "./components/books.json";
+import Footer from "./components/Fotter";
 
+//----------------------------------------------------------------
 //Preparational work, updating books with new values: id and genre
 const genres = [
   "Fiction",
@@ -29,10 +31,12 @@ const updatedBooks = books.map((book, i) => ({
 }));
 
 const initialBooks = updatedBooks.filter((book) => book.id < 3);
+//----------------------------------------------------------------
 
 export default function App() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [books, setBooks] = useState(initialBooks);
 
   function handleShowInfo() {
     setIsInfoOpen((isOpen) => !isOpen);
@@ -42,22 +46,40 @@ export default function App() {
     setIsAddOpen((isOpen) => !isOpen);
   }
 
+  function handleAddBook(newBook) {
+    if (books.some((book) => book.id === newBook.id)) {
+      console.log(
+        `${newBook.title} by ${newBook.author} is already on your bookshelf`
+      );
+    } else {
+      setBooks((books) => [...books, newBook]);
+    }
+  }
+
   return (
     <div className="App">
       <div>
-        <h1>Personal Library</h1>
-        <Bookshelf books={initialBooks} onOpenInfo={handleShowInfo} />
+        <h1 className="main-title">Personal Library</h1>
+        <Bookshelf collection={books} onOpenInfo={handleShowInfo} />
 
         <Button onClick={handleShowAddBook}>
           {isAddOpen ? "Close" : "Add new book"}
         </Button>
 
-        {isAddOpen && <AddBook books={updatedBooks} />}
+        {isAddOpen && (
+          <AddBook
+            collection={books}
+            allBooks={updatedBooks}
+            onAddBook={handleAddBook}
+          />
+        )}
       </div>
 
       {isInfoOpen && (
         <Info book={updatedBooks[1]} onOpenInfo={handleShowInfo} />
       )}
+
+      <Footer />
     </div>
   );
 }
