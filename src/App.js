@@ -34,33 +34,36 @@ const initialBooks = updatedBooks.filter((book) => book.id < 3);
 //----------------------------------------------------------------
 
 export default function App() {
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [books, setBooks] = useState(initialBooks);
-
-  function handleShowInfo() {
-    setIsInfoOpen((isOpen) => !isOpen);
-  }
+  const [message, setMessage] = useState("");
+  const [selectedBook, setSelectedBook] = useState(null);
 
   function handleShowAddBook() {
     setIsAddOpen((isOpen) => !isOpen);
   }
 
   function handleAddBook(newBook) {
-    if (books.some((book) => book.id === newBook.id)) {
-      console.log(
-        `${newBook.title} by ${newBook.author} is already on your bookshelf`
-      );
-    } else {
-      setBooks((books) => [...books, newBook]);
-    }
+    setBooks((books) => [...books, newBook]);
+    setMessage(
+      `${newBook.title} by ${newBook.author} was successfuly added on your bookshelf`
+    );
+    setTimeout(() => setMessage(""), 5000);
+  }
+
+  function handleSelection(book) {
+    setSelectedBook((curBook) => (curBook?.id === book.id ? null : book));
   }
 
   return (
     <div className="App">
       <div>
         <h1 className="main-title">Personal Library</h1>
-        <Bookshelf collection={books} onOpenInfo={handleShowInfo} />
+        <Bookshelf
+          collection={books}
+          selectedBook={selectedBook}
+          onSelection={handleSelection}
+        />
 
         <Button onClick={handleShowAddBook}>
           {isAddOpen ? "Close" : "Add new book"}
@@ -75,11 +78,11 @@ export default function App() {
         )}
       </div>
 
-      {isInfoOpen && (
-        <Info book={updatedBooks[1]} onOpenInfo={handleShowInfo} />
+      {selectedBook && (
+        <Info selectedBook={selectedBook} setSelectedBook={setSelectedBook} />
       )}
 
-      <Footer />
+      <Footer>{message}</Footer>
     </div>
   );
 }

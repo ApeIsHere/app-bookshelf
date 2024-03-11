@@ -105,7 +105,7 @@ export default function AddBook({ collection, allBooks, onAddBook }) {
               btnText={checkCollection(book) ? "in Collection" : "Add"}
               disabled={checkCollection(book) ? "disabled" : ""}
               key={book.id}
-              onClick={() => onAddBook(book)}
+              onSelection={() => onAddBook(book)}
             />
           ))}
         </div>

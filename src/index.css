@@ -1,7 +1,7 @@
 :root {
   --main-color: rgb(223, 213, 201);
-  --second-color: bisque;
-  --third-color: rgb(204, 166, 119);
+  --second-color: #cca677;
+  --third-color: #bbb19c;
 }
 
 body {
@@ -70,6 +70,10 @@ h2 {
 
 .book.disabled {
   filter: grayscale(1);
+}
+
+.book.selected {
+  /* background-color: var(--third-color); */
 }
 
 .title {
@@ -186,7 +190,7 @@ h2 {
   width: fit-content;
   padding: 10px 30px;
   border-radius: 12px;
-  background-color: var(--second-color);
+  background-color: var(--third-color);
   font-weight: bold;
 }
 
@@ -197,4 +201,11 @@ h2 {
   height: 40px;
   border-radius: 8px;
   background-color: var(--third-color);
+}
+
+.footer .message {
+  text-align: center;
+  margin: 5px;
+  font-size: 1.3rem;
+  font-weight: bold;
 }
