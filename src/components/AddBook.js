@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "./Button";
 import Book from "./Book";
+import SortingElement from "./SortingElement";
 
 export default function AddBook({
   allBooks,
@@ -9,6 +10,7 @@ export default function AddBook({
   onSelection,
   checkCollection,
 }) {
+  const [i, setI] = useState(0);
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
   const [length, setLength] = useState("");
@@ -16,6 +18,7 @@ export default function AddBook({
   const authors = [...new Set(allBooks.map((book) => book.author))].sort();
   const genres = [...new Set(allBooks.map((book) => book.genre))].sort();
   const range = ["Short", "Average", "Long"];
+  const isFilterOn = author || genre || length;
 
   function filterBooks() {
     const filteredBooks = allBooks.filter((book) => {
@@ -33,24 +36,35 @@ export default function AddBook({
     if (filteredBooks.length > 0) {
       setShownBooks(filteredBooks);
     } else {
-      setShownBooks([]);
+      setShownBooks();
     }
   }
-
+  
+  
   useEffect(() => {
-    if (author || genre || length) {
+    if (i>=1) {
       filterBooks();
     }
+    setI((i) => i += 1);
   }, [author, genre, length]);
+  
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (shownBooks) {
+    if (shownBooks && !isFilterOn) {
       setAuthor("");
       setGenre("");
       setLength("");
       setShownBooks();
+    } else if (isFilterOn){
+      setAuthor("");
+      setGenre("");
+      setLength("");
+      setI(0);
     } else {
+      setAuthor("");
+      setGenre("");
+      setLength("");
       filterBooks();
     }
   }
@@ -60,45 +74,48 @@ export default function AddBook({
       <h3>Add new book</h3>
       <form onSubmit={handleSubmit}>
         <div className="add__sort">
-          <SelectElement value={author} setter={setAuthor} array={authors}>
+          <SortingElement
+            value={author}
+            setter={setAuthor}
+            array={authors}
+            def={"All"}
+          >
             Author
-          </SelectElement>
-          <SelectElement value={genre} setter={setGenre} array={genres}>
+          </SortingElement>
+          <SortingElement
+            value={genre}
+            setter={setGenre}
+            array={genres}
+            def={"All"}
+          >
             Genre
-          </SelectElement>
-          <SelectElement value={length} setter={setLength} array={range}>
+          </SortingElement>
+          <SortingElement
+            value={length}
+            setter={setLength}
+            array={range}
+            def={"All"}
+          >
             Length
-          </SelectElement>
+          </SortingElement>
         </div>
-        <Button>{shownBooks ? "Clear All" : "Show"}</Button>
+        <Button>{isFilterOn ? "Clear Filters" : shownBooks ? "Close All" : "Show All"}</Button>
         {<p></p>}
       </form>
       <ShownBooks />
     </div>
   );
 
-  function SelectElement({ children, value, setter, array }) {
-    return (
-      <label>
-        {children}
-        <select value={value} onChange={(e) => setter(e.target.value)}>
-          <option value="">All</option>
-          {array.map((el) => (
-            <option value={el} key={el}>
-              {el}
-            </option>
-          ))}
-        </select>
-      </label>
-    );
-  }
-
   function ShownBooks() {
-    if (!shownBooks) {
+    if (!shownBooks && !isFilterOn) {
       return null;
     }
 
-    if (shownBooks.length > 0) {
+    if (!shownBooks && isFilterOn){
+      return <p className="search-result">No books were found...</p>;
+    }
+
+    if (shownBooks?.length > 0) {
       return (
         <div className="bookshelf">
           {shownBooks.map((book) => (
@@ -116,7 +133,5 @@ export default function AddBook({
         </div>
       );
     }
-
-    return <p className="search-result">No books were found...</p>;
   }
 }

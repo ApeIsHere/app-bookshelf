@@ -37,8 +37,12 @@ const initialBooks = updatedBooks.filter((book) => book.id < 3);
 export default function App() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [books, setBooks] = useState(initialBooks);
-  const [message, setMessage] = useState("");
   const [selectedBook, setSelectedBook] = useState(null);
+  const [message, setMessage] = useState("");
+
+  function handleSelection(book) {
+    setSelectedBook((curBook) => (curBook?.id === book.id ? null : book));
+  }
 
   function handleShowAddBook() {
     setIsAddOpen((isOpen) => !isOpen);
@@ -50,10 +54,6 @@ export default function App() {
       `${newBook.title} by ${newBook.author} was successfuly added on your bookshelf`
     );
     setTimeout(() => setMessage(""), 4000);
-  }
-
-  function handleSelection(book) {
-    setSelectedBook((curBook) => (curBook?.id === book.id ? null : book));
   }
 
   function handleDeleteBook(book) {

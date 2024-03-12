@@ -1,8 +1,9 @@
 export default function Footer({ children, collection }) {
   const numBooks = collection.length;
-  const timeToRead =
-    (collection.reduce((acc, book) => acc + book.pages, 0) * 2) / 60;
-  console.log();
+  const timeToRead = collection
+  .filter((book) => !book.read)
+  .reduce((acc, book) => acc + book.pages, 0) * 2 / 60;
+
   return (
     <div className="footer">
       <p className="message">{children}</p>
