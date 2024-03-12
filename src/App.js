@@ -27,6 +27,7 @@ function getRandomGenres() {
 const updatedBooks = books.map((book, i) => ({
   ...book,
   id: i,
+  read: false,
   genre: getRandomGenres(),
 }));
 
@@ -48,11 +49,32 @@ export default function App() {
     setMessage(
       `${newBook.title} by ${newBook.author} was successfuly added on your bookshelf`
     );
-    setTimeout(() => setMessage(""), 5000);
+    setTimeout(() => setMessage(""), 4000);
   }
 
   function handleSelection(book) {
     setSelectedBook((curBook) => (curBook?.id === book.id ? null : book));
+  }
+
+  function handleDeleteBook(book) {
+    const confirmed = window.confirm(`Delete ${book.title} ?`);
+    if (confirmed) {
+      setBooks((books) => books.filter((b) => b.id !== book.id));
+      setMessage(`${book.title} by ${book.author} was deleted`);
+      setTimeout(() => setMessage(""), 4000);
+
+      setSelectedBook(null);
+    }
+  }
+
+  function handleMarkAsRead(book) {
+    setBooks((books) =>
+      books.map((b) => (b.id === book.id ? { ...b, read: !b.read } : b))
+    );
+  }
+
+  function checkCollection(book) {
+    return books.some((b) => b.id === book.id);
   }
 
   return (
@@ -63,6 +85,7 @@ export default function App() {
           collection={books}
           selectedBook={selectedBook}
           onSelection={handleSelection}
+          onMarkAsRead={handleMarkAsRead}
         />
 
         <Button onClick={handleShowAddBook}>
@@ -71,18 +94,26 @@ export default function App() {
 
         {isAddOpen && (
           <AddBook
-            collection={books}
             allBooks={updatedBooks}
             onAddBook={handleAddBook}
+            selectedBook={selectedBook}
+            onSelection={handleSelection}
+            checkCollection={checkCollection}
           />
         )}
       </div>
 
       {selectedBook && (
-        <Info selectedBook={selectedBook} setSelectedBook={setSelectedBook} />
+        <Info
+          selectedBook={selectedBook}
+          setSelectedBook={setSelectedBook}
+          onAddBook={handleAddBook}
+          onDeleteBook={handleDeleteBook}
+          checkCollection={checkCollection}
+        />
       )}
 
-      <Footer>{message}</Footer>
+      <Footer collection={books}>{message}</Footer>
     </div>
   );
 }

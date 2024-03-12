@@ -5,23 +5,28 @@ export default function Book({
   onSelection,
   btnText,
   disabled,
+  className,
   selectedBook,
+  onClick,
 }) {
   const isSelected = selectedBook?.id === book.id;
 
   return (
     <li
-      className={isSelected ? `book ${disabled} selected` : `book ${disabled}`}
+      className={
+        isSelected ? `book ${className} selected` : `book ${className}`
+      }
     >
       <label className="title">{book.title}</label>
-      <img className="image" src={book.imageLink} alt={book.title}></img>
-      <label className="author">{book.author}</label>
-      <Button
+      <img
+        className="image"
+        src={book.imageLink}
+        alt={book.title}
         onClick={() => onSelection(book)}
-        disabled={disabled}
-        color={isSelected ? "#cca677" : ""}
-      >
-        {isSelected ? "Close" : btnText}
+      ></img>
+      <label className="author">{book.author}</label>
+      <Button disabled={disabled} onClick={onClick}>
+        {btnText}
       </Button>
     </li>
   );

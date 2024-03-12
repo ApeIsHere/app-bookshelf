@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import Button from "./Button";
 import Book from "./Book";
 
-export default function AddBook({ collection, allBooks, onAddBook }) {
+export default function AddBook({
+  allBooks,
+  onAddBook,
+  selectedBook,
+  onSelection,
+  checkCollection,
+}) {
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
   const [length, setLength] = useState("");
@@ -29,10 +35,6 @@ export default function AddBook({ collection, allBooks, onAddBook }) {
     } else {
       setShownBooks([]);
     }
-  }
-
-  function checkCollection(book) {
-    return collection.some((b) => b.id === book.id);
   }
 
   useEffect(() => {
@@ -103,9 +105,12 @@ export default function AddBook({ collection, allBooks, onAddBook }) {
             <Book
               book={book}
               btnText={checkCollection(book) ? "in Collection" : "Add"}
-              disabled={checkCollection(book) ? "disabled" : ""}
+              disabled={checkCollection(book) && "disabled"}
+              className={checkCollection(book) && "disabled"}
               key={book.id}
-              onSelection={() => onAddBook(book)}
+              selectedBook={checkCollection(book) || selectedBook}
+              onSelection={() => onSelection(book)}
+              onClick={() => onAddBook(book)}
             />
           ))}
         </div>

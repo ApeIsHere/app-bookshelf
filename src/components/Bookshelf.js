@@ -1,6 +1,11 @@
 import Book from "./Book";
 
-export default function Bookshelf({ collection, onSelection, selectedBook }) {
+export default function Bookshelf({
+  collection,
+  onSelection,
+  selectedBook,
+  onMarkAsRead,
+}) {
   return (
     <div className="block">
       <h2>Bookshelf</h2>
@@ -11,7 +16,9 @@ export default function Bookshelf({ collection, onSelection, selectedBook }) {
             selectedBook={selectedBook}
             onSelection={onSelection}
             key={book.imageLink}
-            btnText="Details"
+            btnText={book.read ? "Unmark" : "Mark as read"}
+            onClick={() => onMarkAsRead(book)}
+            className={book.read ? "read" : ""}
           />
         ))}
       </ul>
